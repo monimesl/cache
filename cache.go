@@ -26,6 +26,7 @@ const (
 
 var (
 	ErrCacheMiss          = errors.New("cache: key is missing")
+	errLocalCacheNil      = errors.New("cache: LocalCache is nil")
 	errRedisLocalCacheNil = errors.New("cache: both Redis and LocalCache are nil")
 )
 
@@ -59,6 +60,7 @@ type Item struct {
 
 	// SkipLocalCache skips local cache as if it is not set.
 	SkipLocalCache bool
+	SkioRedisCache bool
 }
 
 func (item *Item) Context() context.Context {
@@ -96,7 +98,7 @@ func (item *Item) ttl() time.Duration {
 	return defaultTTL
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 type (
 	MarshalFunc   func(interface{}) ([]byte, error)
 	UnmarshalFunc func([]byte, interface{}) error
@@ -161,7 +163,9 @@ func (cd *Cache) set(item *Item) ([]byte, bool, error) {
 	if cd.opt.LocalCache != nil && !item.SkipLocalCache {
 		cd.opt.LocalCache.Set(item.Key, b)
 	}
-
+	if item.SkioRedisCache {
+		return b, true, nil
+	}
 	if cd.opt.Redis == nil {
 		if cd.opt.LocalCache == nil {
 			return b, true, errRedisLocalCacheNil
@@ -199,6 +203,16 @@ func (cd *Cache) GetSkippingLocalCache(
 	ctx context.Context, key string, value interface{},
 ) error {
 	return cd.get(ctx, key, value, true)
+}
+
+func (cd *Cache) GetFromLocalCache(_ context.Context, key string, value interface{}) error {
+	if cd.opt.LocalCache != nil {
+		if b, ok := cd.opt.LocalCache.Get(key); ok {
+			return cd.unmarshal(b, value)
+		}
+		return ErrCacheMiss
+	}
+	return errLocalCacheNil
 }
 
 func (cd *Cache) get(
