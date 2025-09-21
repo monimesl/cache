@@ -60,7 +60,7 @@ type Item struct {
 
 	// SkipLocalCache skips local cache as if it is not set.
 	SkipLocalCache bool
-	SkioRedisCache bool
+	SkipRedisCache bool
 }
 
 func (item *Item) Context() context.Context {
@@ -163,7 +163,7 @@ func (cd *Cache) set(item *Item) ([]byte, bool, error) {
 	if cd.opt.LocalCache != nil && !item.SkipLocalCache {
 		cd.opt.LocalCache.Set(item.Key, b)
 	}
-	if item.SkioRedisCache {
+	if item.SkipRedisCache {
 		return b, true, nil
 	}
 	if cd.opt.Redis == nil {
