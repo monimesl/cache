@@ -1,4 +1,4 @@
-module github.com/go-redis/cache/v9
+module github.com/monimesl/go-redis-cache
 
 go 1.13
 
@@ -7,7 +7,8 @@ require (
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.25.0
-	github.com/redis/go-redis/v9 v9.0.5
+	github.com/redis/go-redis/v9 v9.14.0
+	github.com/stretchr/testify v1.8.1 // indirect
 	github.com/vmihailenco/go-tinylfu v0.2.2
 	github.com/vmihailenco/msgpack/v5 v5.3.4
 	golang.org/x/sync v0.1.0

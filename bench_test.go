@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/go-redis/cache/v9"
+	cache "github.com/monimesl/go-redis-cache"
 )
 
 func BenchmarkOnce(b *testing.B) {

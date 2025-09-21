@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	cache "github.com/monimesl/go-redis-cache"
 	"github.com/redis/go-redis/v9"
-
-	"github.com/go-redis/cache/v9"
 )
 
 type Object struct {
